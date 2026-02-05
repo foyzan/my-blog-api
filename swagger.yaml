@@ -17,7 +17,26 @@ tags:
   description: User Management Endpoints (Admin only)
 - name: Profile
   description: "Profile Endpoints (public, private)"
+- name: Test
+  description: Test Endpoints
 paths:
+  /test:
+    get:
+      tags:
+      - Test
+      description: Test endpoint to verify API is running
+      responses:
+        "200":
+          description: Test successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    examples:
+                    - Hello
   /auth/singup:
     post:
       tags:
@@ -288,9 +307,9 @@ paths:
         schema:
           type: string
           enum:
-          - ascending
-          - descending
-          default: descending
+          - asc
+          - dsc
+          default: dsc
       - name: sort_by
         in: query
         description: ""
@@ -1550,9 +1569,9 @@ components:
       schema:
         type: string
         enum:
-        - ascending
-        - descending
-        default: descending
+        - asc
+        - dsc
+        default: dsc
     sort_byParam:
       name: sort_by
       in: query
