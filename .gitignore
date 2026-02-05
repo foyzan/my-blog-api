@@ -1,0 +1,21 @@
+# 1. Dependency massive folders
+node_modules/
+old/
+# 2. Sensitive Environment Variables (Never leak your DB password!)
+.env
+.env.local
+
+# 3. Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# 4. OS specific files
+.DS_Store
+Thumbs.db
+
+# 5. Build/Dist folders (if you use TypeScript or a bundler)
+dist/
+build/

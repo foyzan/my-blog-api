@@ -1,0 +1,38 @@
+name: mongodb-development-stack
+
+services:
+  mongodb:
+    # Using the official community server image
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      # These set your admin credentials upon first startup
+      MONGO_INITDB_ROOT_USERNAME: testuser
+      MONGO_INITDB_ROOT_PASSWORD: testpassword
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      # Connects to the 'mongodb' service name above
+      ME_CONFIG_MONGODB_URL: mongodb://testuser:testpassword@mongodb:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: testuser
+      ME_CONFIG_MONGODB_ADMINPASSWORD: testpassword
+      # Login for the web interface itself
+      ME_CONFIG_BASICAUTH_USERNAME: webuser
+      ME_CONFIG_BASICAUTH_PASSWORD: webpassword
+    depends_on:
+      mongodb:
+        condition: service_started
+
+volumes:
+  mongo-data:
+    
