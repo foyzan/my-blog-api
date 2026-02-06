@@ -21,4 +21,11 @@ const userSchema = new Schema({
 
 const User = model('User', userSchema)
 
+
+
+
+// To insert them all at once:
+// await User.insertMany(users);
+
+
 module.exports = User;

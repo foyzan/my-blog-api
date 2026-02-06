@@ -1,6 +1,6 @@
 const { Article } = require("../../model");
 
-const findAll = async ({
+const findAll =  ({
   page = 1,
   limit = 10,
   sortType = "dsc",
@@ -19,35 +19,54 @@ const findAll = async ({
   const sortOrder = sortType === "dsc" ? -1 : 1;
   const sortOptions = { [sortBy]: sortOrder };
 
-  const articles = Article.find(filter)
-    .sort(sortOptions)
-    .skip((Number(page) - 1) * limit)
-    .limit(Number(limit));
+  return Article.find(filter)         // 1. Initial Query
+  .select('-__v')                                   // 2. Field Selection
+  .populate({                                       // 3. Joins/Transforms
+    path: 'author',
+    select: 'name',
+  })
+  .lean()                                           // 4. Performance Optimization
+  .sort(sortOptions)                                // 5. Ordering
+  .skip((Number(page) - 1) * limit)                 // 6. Pagination Skip
+  .limit(Number(limit));
 
-  return articles;
+
+ 
 };
 
-const create = async ({
+
+const countDocuments = ({searchQuery = ''})=>{
+
+  const filter = {};
+  if (searchQuery) {
+    filter.title = { $regex: searchQuery, $options: "i" };
+  }
+
+  return Article.countDocuments(filter)
+}
+
+const create =  ({
   title,
   body = "",
   cover = "",
   status = "draft",
   author,
 }) => {
-
-  if(!title || !author){
-    const error = new Error('invalid parameters');
-    error.status = 400
-    throw error
+  if (!title || !author) {
+    const error = new Error("invalid parameters");
+    error.status = 400;
+    throw error;
   }
 
-  const article = new Article({title, body, cover, status, author})
+  const article = new Article({ title, body, cover, status, author });
 
-  const savedArticle = await article.save()
+  return article.save();
 
-  return savedArticle
+  
 };
 
 module.exports = {
   findAll,
+  countDocuments,
+  create
 };

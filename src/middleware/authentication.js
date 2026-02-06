@@ -6,8 +6,6 @@ const authenticate = (req, res, next) =>{
         role: "user",
         status: "approved"
     }
-    
-
     next()
 }
 
