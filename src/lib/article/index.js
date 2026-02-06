@@ -1,11 +1,12 @@
+const defaults = require("../../config/defaults");
 const { Article } = require("../../model");
 
 const findAll =  ({
-  page = 1,
-  limit = 10,
-  sortType = "dsc",
-  sortBy = "updatedAt",
-  searchQuery = "",
+  page = defaults.page,
+  limit = defaults.limit,
+  sortType = defaults.sortType,
+  sortBy = defaults.sortBy,
+  searchQuery = defaults.searchQuery,
 }) => {
   /**
    * searchQuery available

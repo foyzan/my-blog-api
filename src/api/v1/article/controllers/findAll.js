@@ -1,26 +1,19 @@
+const { ur } = require("@faker-js/faker");
+const defaults = require("../../../../config/defaults");
 const articleService = require("../../../../lib/article");
+const { getPagination, getHateOASForAll } = require("../../../../utils/");
 
 
-// -------------helper function-------------------
 
 
-const queryContractor = (query) => {
 
 
-  const queryString = new URLSearchParams(query).toString();
-  
-  // Combine base, path, and query (if query exists)
-  return queryString ? queryString : '';
-};
-
-
-// -------------Controller-----------------------
 const findAll = async (req, res, next) => {
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 10;
-  const sortType = req.query.sort_type || "dsc";
-  const sortBy = req.query.sort_by || "updatedAt";
-  const searchQuery = req.query.search || "";
+  const page = Number(req.query.page) || defaults.page;
+  const limit = Number(req.query.limit) || defaults.limit;
+  const sortType = req.query.sort_type || defaults.sortType;
+  const sortBy = req.query.sort_by || defaults.sortBy;
+  const searchQuery = req.query.search || defaults.searchQuery;
 
   try {
 
@@ -33,8 +26,7 @@ const findAll = async (req, res, next) => {
       searchQuery,
     });
 
-    const totalItems = await articleService.countDocuments({searchQuery});
-
+    
 
     // response
 
@@ -46,35 +38,14 @@ const findAll = async (req, res, next) => {
     })
 
     //pagination
-    const totalPage = Math.ceil(totalItems / limit)
-    const pagination = {
-      page,
-      limit,
-      totalItems,
-      totalPage
-    }
+    const totalItems = await articleService.countDocuments({searchQuery});
+    const pagination = getPagination({page, limit, totalItems});
 
-    if(page > 1){
-      pagination.prev = page -1;
-    }
-
-    if(page < totalPage){
-      pagination.next = page + 1;
-    }
-
-    // HATEOS links
-
+    // HATOAS 
     const url = req.baseUrl + req.path;
-    const links = {
-      self : url + queryContractor({...req.query})
-    }
-
-    if(pagination.next){
-      links.next = url + queryContractor({...req.query, page: page + 1});
-    }
-    if(pagination.prev){
-      links.prev = url + queryContractor({...req.query, page: page - 1});
-    }
+    const links =  getHateOASForAll({url: url, query: req.query, page: page, hasNext: pagination.next, hasPrev: pagination.prev})
+  
+    
 
     res.status(200).json({
       data,
