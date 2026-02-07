@@ -1,16 +1,31 @@
-const articleService = require('../../../../lib/article')
+const articleService = require("../../../../lib/article");
 
-const create = async (req, res, next)=>{
+const create = async (req, res, next) => {
+  const { title, body, cover, status } = req.body;
+  const author = req.user.id;
+  try {
+    const article = await articleService.create({
+      title,
+      body,
+      cover,
+      status,
+      author,
+    });
 
-    const {title, body, cover, status} = req.body
-    const author = req.user.id
-    try {
-        const article = await articleService.create({title, body, cover, status, author})
-        res.status(201).json(article)
-    } catch (error) {
-        next(error)
-    }
+    const response = {
+      code: 201,
+      message: "article created",
+      data: {...article._doc},
+      links: {
+        self:  `/article/${article._id}`,
+        author: `/article/${article._id}/author`,
+        comment: `/article/${article._id}/comment`,
+      },
+    };
+    res.status(201).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
 
-}
-
-module.exports = create
+module.exports = create;

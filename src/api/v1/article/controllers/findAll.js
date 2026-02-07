@@ -1,4 +1,4 @@
-const { ur } = require("@faker-js/faker");
+
 const defaults = require("../../../../config/defaults");
 const articleService = require("../../../../lib/article");
 const { getPagination, getHateOASForAll } = require("../../../../utils/");

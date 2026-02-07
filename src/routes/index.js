@@ -12,7 +12,7 @@ router.route("/articles")
 .post(articleController.create);
 
 router.route("/articles/:id")
-.get(test)
+.get(articleController.findSingleItem)
 .post(test)
 .put(test)
 .patch(test)

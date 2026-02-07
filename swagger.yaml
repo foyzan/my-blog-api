@@ -668,8 +668,8 @@ paths:
         in: path
         description: authorId
         schema:
-          type: integer
-          format: int32
+          type: string
+          format: int3
           examples:
           - 125455
       - name: expend
@@ -883,8 +883,7 @@ paths:
         in: path
         description: authorId
         schema:
-          type: integer
-          format: int32
+          type: string
           examples:
           - 125455
       requestBody:
@@ -1114,8 +1113,7 @@ paths:
         in: path
         description: authorId
         schema:
-          type: integer
-          format: int32
+          type: string
           examples:
           - 125455
       requestBody:
@@ -1595,7 +1593,6 @@ components:
       in: path
       description: authorId
       schema:
-        type: integer
-        format: int32
+        type: string
         examples:
         - 125455

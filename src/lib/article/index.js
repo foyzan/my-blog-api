@@ -1,5 +1,7 @@
+
 const defaults = require("../../config/defaults");
-const { Article } = require("../../model");
+const { Article, Comment } = require("../../model");
+const { findById } = require("../../model/Article");
 
 const findAll =  ({
   page = defaults.page,
@@ -66,8 +68,37 @@ const create =  ({
   
 };
 
+const findSingleItem = async ({ id, expend = "" }) => {
+  if (!id) {
+    throw new Error("invalid argument");
+  }
+
+  
+  if (expend === "author") {
+    return await Article.findById(id)
+      .populate({ path: "author", select: "name" })
+      .lean();
+  } 
+
+
+  if (expend === "comment") {
+    const article = await Article.findById(id).lean();
+    if (!article) return null;
+
+    const comments = await Comment.find({ article: id })
+      .populate("author", "name")
+      .lean();
+
+    return { ...article, comments };
+  }
+
+
+  return await Article.findById(id).lean();
+};
+
 module.exports = {
   findAll,
   countDocuments,
-  create
+  create,
+  findSingleItem
 };
