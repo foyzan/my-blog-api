@@ -13,8 +13,7 @@ router.route("/articles")
 
 router.route("/articles/:id")
 .get(articleController.findSingleItem)
-.post(test)
-.put(test)
+.put(articleController.updateItem)
 .patch(test)
 .delete(test)
 

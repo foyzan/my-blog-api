@@ -989,7 +989,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - Article successfully updated
+                    - Article successfully created
                   data:
                     allOf:
                     - type: object
