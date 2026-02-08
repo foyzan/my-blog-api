@@ -1,7 +1,6 @@
 const defaults = require("../../config/defaults");
 const { Article, Comment } = require("../../model");
 
-
 const findAll = ({
   page = defaults.page,
   limit = defaults.limit,
@@ -86,44 +85,40 @@ const updateOrCreate = async (
   id,
   { title, body, author, cover = "", status = "draft" },
 ) => {
-
   const payload = {
     title,
     body,
     author,
     cover,
-    status
-  }
+    status,
+  };
   const article = await Article.findOneAndUpdate(
-      { _id: id },                 // 1. Filter: Find by this ID
-      { $set: payload },           // 2. Data: What to put in the document
-      { 
-        new: true,                 // Return the updated/new document
-        upsert: true,              // Create it if it doesn't exist
-        runValidators: true,       // Ensure schema rules are followed
-        setDefaultsOnInsert: true, // Apply default values if creating new
-        includeResultMetadata: true
-      }
-    ).lean()
+    { _id: id }, // 1. Filter: Find by this ID
+    { $set: payload }, // 2. Data: What to put in the document
+    {
+      new: true, // Return the updated/new document
+      upsert: true, // Create it if it doesn't exist
+      runValidators: true, // Ensure schema rules are followed
+      setDefaultsOnInsert: true, // Apply default values if creating new
+      includeResultMetadata: true,
+    },
+  ).lean();
 
-    // 3. Determine HTTP Code based on MongoDB metadata
+  // 3. Determine HTTP Code based on MongoDB metadata
   const isUpdate = article.lastErrorObject.updatedExisting;
-  
+
   return {
     article: article.value, // The actual article data
-    statusCode: isUpdate ? 200 : 201
+    statusCode: isUpdate ? 200 : 201,
   };
-  
-
 };
-
 
 const updateProperties = async (id, payload) => {
   // 1. Await the execution (findOneAndUpdate returns a query object, not the doc, if not awaited)
   const article = await Article.findOneAndUpdate(
     { _id: id },
     { $set: payload },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   ).lean();
 
   if (!article) {
@@ -132,23 +127,45 @@ const updateProperties = async (id, payload) => {
     throw error;
   }
 
-  // 2. Return the formatted object. 
+  // 2. Return the formatted object.
   // Use 'article' (the variable defined above) and return it directly.
   return {
-    id: article._id.toString(), 
+    id: article._id.toString(),
     title: article.title,
     body: article.body,
     cover: article.cover,
     status: article.status,
     CreatedAt: article.createdAt, // Matches your Swagger 'CreatedAt'
-    updatedAt: article.updatedAt
+    updatedAt: article.updatedAt,
   };
 };
+
+const removeItem = async (id) => {
+  const article = await Article.findById(id);
+
+  if (!article) {
+    const error = new Error("Article not found");
+    error.status = 404;
+    throw error;
+  }
+
+  // TODO : clean up comments, cover photo and other related data.
+
+  const deleteArticle = await Article.findByIdAndDelete(id)
+
+  return deleteArticle;
+
+
+};
+
+
+
 module.exports = {
   findAll,
   countDocuments,
   create,
   findSingleItem,
   updateOrCreate,
-  updateProperties
+  updateProperties,
+  removeItem
 };
