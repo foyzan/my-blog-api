@@ -1,8 +1,8 @@
 const authenticate = (req, res, next) =>{
 
     req.user = {
-        id: '6984d021bd5d921cee636cd1',
-        name: "Diana Prince",
+        id: '6985ca72172423ee20b12e11',
+        name: "Diana Prince 4",
         role: "user",
         status: "approved"
     }

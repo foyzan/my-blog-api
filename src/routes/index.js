@@ -14,7 +14,7 @@ router.route("/articles")
 router.route("/articles/:id")
 .get(articleController.findSingleItem)
 .put(articleController.updateItem)
-.patch(test)
+.patch(articleController.updateItemPatch)
 .delete(test)
 
 module.exports = router;

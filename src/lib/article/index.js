@@ -117,10 +117,38 @@ const updateOrCreate = async (
 
 };
 
+
+const updateProperties = async (id, payload) => {
+  // 1. Await the execution (findOneAndUpdate returns a query object, not the doc, if not awaited)
+  const article = await Article.findOneAndUpdate(
+    { _id: id },
+    { $set: payload },
+    { new: true, runValidators: true }
+  ).lean();
+
+  if (!article) {
+    const error = new Error("Article not found");
+    error.status = 404;
+    throw error;
+  }
+
+  // 2. Return the formatted object. 
+  // Use 'article' (the variable defined above) and return it directly.
+  return {
+    id: article._id.toString(), 
+    title: article.title,
+    body: article.body,
+    cover: article.cover,
+    status: article.status,
+    CreatedAt: article.createdAt, // Matches your Swagger 'CreatedAt'
+    updatedAt: article.updatedAt
+  };
+};
 module.exports = {
   findAll,
   countDocuments,
   create,
   findSingleItem,
   updateOrCreate,
+  updateProperties
 };

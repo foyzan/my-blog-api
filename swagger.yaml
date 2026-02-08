@@ -1117,13 +1117,11 @@ paths:
           examples:
           - 125455
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-              - title
-              - body
               properties:
                 title:
                   type: string
@@ -1165,9 +1163,6 @@ paths:
                   data:
                     allOf:
                     - type: object
-                      required:
-                      - title
-                      - body
                       properties:
                         title:
                           type: string
