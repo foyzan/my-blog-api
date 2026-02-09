@@ -1,8 +1,34 @@
+const authService = require("../../../../lib/authentication");
 
+const register = async (req, res, next) => {
+  const { name, username, email, password } = req.body;
 
-const register = async (req, res, error) =>{
+  try {
+    const accessToken = await authService.register({
+      name,
+      username,
+      email,
+      password,
+    });
 
-    res.send('register')
-}
+    const response = {
+      code: 201,
+      message: "registration successful",
+      data: {
+        access_token: accessToken,
+      },
+      links: {
+        self: req.originalUrl,
+        login: `${req.baseUrl}/auth/login`,
+      },
+    };
 
-module.exports = register
+    res.status(201).json(response);
+  } catch (error) {
+    next(error);
+  }
+
+  //response
+};
+
+module.exports = register;

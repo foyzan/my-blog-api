@@ -91,40 +91,19 @@ paths:
                   data:
                     type: object
                     required:
-                    - name
-                    - username
-                    - email
-                    - password
+                     - access_token
                     properties:
-                      name:
+                      access_token:
                         type: string
                         examples:
-                        - kamal khan chowdhury
-                      username:
-                        type: string
-                        examples:
-                        - KamalUnreal
-                      email:
-                        type: string
-                        format: email
-                        examples:
-                        - info@kamal.com
-                      password:
-                        type: string
-                        format: password
-                        examples:
-                        - efeT23!kj)
-                  access_token:
-                    type: string
-                    examples:
-                    - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZveXphbiBBaG1lZCIsImVtYWlsIjoiaW5mb0Bmb3l6YW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                          - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZveXphbiBBaG1lZCIsImVtYWlsIjoiaW5mb0Bmb3l6YW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
                   links:
                     type: object
                     properties:
                       self:
                         type: string
                         examples:
-                        - /auth/register:
+                        - /auth/register
                       login:
                         type: string
                         examples:
