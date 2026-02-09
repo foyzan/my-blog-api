@@ -1,5 +1,6 @@
 const defaults = require("../../config/defaults");
 const { Article, Comment } = require("../../model");
+const { badRequest, notFound } = require("../../utils/error");
 
 const findAll = ({
   page = defaults.page,
@@ -44,9 +45,8 @@ const countDocuments = ({ searchQuery = "" }) => {
 
 const create = ({ title, body = "", cover = "", status = "draft", author }) => {
   if (!title || !author) {
-    const error = new Error("invalid parameters");
-    error.status = 400;
-    throw error;
+   
+    throw badRequest("invalid parameters");
   }
 
   const article = new Article({ title, body, cover, status, author });
@@ -56,14 +56,14 @@ const create = ({ title, body = "", cover = "", status = "draft", author }) => {
 
 const findSingleItem = async ({ id, expend = "" }) => {
   if (!id) {
-    throw new Error("invalid argument");
+  
+    throw badRequest("invalid argument")
   }
 
   const article = await Article.findById(id);
   if (!article) {
-    const error = new Error("Resource not found");
-    error.status = 404;
-    throw error;
+   
+    throw notFound("Resource not found");
   }
 
   if (expend === "author") {
@@ -122,9 +122,7 @@ const updateProperties = async (id, payload) => {
   ).lean();
 
   if (!article) {
-    const error = new Error("Article not found");
-    error.status = 404;
-    throw error;
+    throw notFound("Article not found");
   }
 
   // 2. Return the formatted object.
@@ -144,9 +142,8 @@ const removeItem = async (id) => {
   const article = await Article.findById(id);
 
   if (!article) {
-    const error = new Error("Article not found");
-    error.status = 404;
-    throw error;
+    
+    throw notFound("Article not found");
   }
 
   // TODO : clean up comments, cover photo and other related data.

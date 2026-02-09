@@ -5,7 +5,7 @@ const commentSchema = new Schema({
     status: {type: String, enum: ['public', 'private']},
     author: {type: Schema.Types.ObjectId, ref: 'User'},
     article: {type: Schema.Types.ObjectId, ref: 'Article'}
-}, {timestamps: true})
+}, {timestamps: true, id : true})
 
 
 const Comment = model('Comment', commentSchema);

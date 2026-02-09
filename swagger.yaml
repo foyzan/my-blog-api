@@ -37,7 +37,7 @@ paths:
                     type: string
                     examples:
                     - Hello
-  /auth/singup:
+  /auth/register:
     post:
       tags:
       - Auth
@@ -73,7 +73,7 @@ paths:
                   - "efeT23!kj)"
       responses:
         "201":
-          description: singup successful
+          description: registration successful
           content:
             application/json:
               schema:
@@ -87,7 +87,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - singup successful
+                    - registration successful
                   data:
                     type: object
                     required:
@@ -124,11 +124,11 @@ paths:
                       self:
                         type: string
                         examples:
-                        - /auth/singup
-                      singin:
+                        - /auth/register:
+                      login:
                         type: string
                         examples:
-                        - /auth/singin
+                        - /auth/login
         "400":
           description: Bad request
           content:
@@ -178,7 +178,7 @@ paths:
                     type: string
                     examples:
                     - We are sorry for the inconvenience. Please try again
-  /auth/singin:
+  /auth/login:
     post:
       tags:
       - Auth

@@ -15,7 +15,7 @@ const articleSchema = new Schema({
     }
 
 
-}, {timestamps: true})
+}, {timestamps: true, id : true})
 
 
 const Article = model('Article', articleSchema);

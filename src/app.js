@@ -1,7 +1,8 @@
 
 const express = require("express");
 const applyMiddleware = require("./middleware");
-const router = require('./routes')
+const router = require('./routes');
+const {notFound}= require("./utils/error");
 const app = express();
 
 applyMiddleware(app);
@@ -22,10 +23,8 @@ app.get("/health", function (req, res) {
 });
 
 app.use((_req, _res, next) => {
-  const error = new Error("Requested resource not found");
-  error.status = 404;
-  error.error = "Not Found";
-
+ 
+  const error = notFound("Requested resource not found")
   next(error);
 });
 

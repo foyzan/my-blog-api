@@ -1,4 +1,5 @@
 const articleService = require("../../../../lib/article");
+const { badRequest } = require("../../../../utils/error");
 
 const updateItemPatch = async (req, res, next) => {
   const { id } = req.params;
@@ -15,9 +16,9 @@ const updateItemPatch = async (req, res, next) => {
 
   // 2. Check if the user actually sent any valid fields
   if (Object.keys(updatePayload).length === 0) {
-    const error = new Error("No valid update fields provided")
-    error.status = 400
-    throw error
+  
+
+    throw badRequest("No valid update fields provided")
   }
 
   try {
