@@ -1,11 +1,16 @@
+const { badRequest } = require("../../utils/error");
 const { userExist } = require("../user")
 
 
 const register = ({name, username, email, password}) =>{
     const hasUser = userExist({email});
-    if(email){
-       const error = new Error  
+    if(hasUser){
+       throw badRequest('Email is already registered.')
     }
+
+    
+
+    
 }
 
 

@@ -122,7 +122,7 @@ const updateProperties = async (id, payload) => {
   ).lean();
 
   if (!article) {
-    throw notFound("Article not found");
+    throw notFound("Resource not found");
   }
 
   // 2. Return the formatted object.
@@ -143,7 +143,7 @@ const removeItem = async (id) => {
 
   if (!article) {
     
-    throw notFound("Article not found");
+    throw notFound("Resource not found");
   }
 
   // TODO : clean up comments, cover photo and other related data.
