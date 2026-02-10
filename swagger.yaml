@@ -198,20 +198,21 @@ paths:
                   data:
                     type: object
                     properties:
-                      email:
+                      access_token:
                         type: string
-                        format: email
                         examples:
-                        - info@kamal.com
-                      password:
+                        - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZveXphbiBBaG1lZCIsImVtYWlsIjoiaW5mb0Bmb3l6YW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  links:
+                    type: object
+                    properties:
+                      self:
                         type: string
-                        format: password
                         examples:
-                        - efeT23!kj)
-                  access_token:
-                    type: string
-                    examples:
-                    - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZveXphbiBBaG1lZCIsImVtYWlsIjoiaW5mb0Bmb3l6YW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                        - /auth/login
+                      register:
+                        type: string
+                        examples:
+                        - /auth/register
         "400":
           description: Bad request
           content:

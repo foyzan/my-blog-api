@@ -22,5 +22,6 @@ const create = async ({name, username, email, password})=>{
 
 module.exports = {
     userExist,
-    create
+    create,
+    findUserByEmail
 }
