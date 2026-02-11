@@ -2,6 +2,7 @@ const articleService = require("../../../../lib/article");
 
 const create = async (req, res, next) => {
   const { title, body, cover, status } = req.body;
+  const author = req.user._id
   try {
     const article = await articleService.create({
       title,

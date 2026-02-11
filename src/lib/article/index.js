@@ -161,6 +161,15 @@ const removeItem = async (id) => {
 };
 
 
+const checkOwnership = async ({resourceId, userId}) => {
+  
+  const article = await Article.findById(resourceId).lean()
+  
+  return hasOwnership = article.author === userId;
+
+
+}
+
 
 module.exports = {
   findAll,
@@ -169,5 +178,6 @@ module.exports = {
   findSingleItem,
   updateOrCreate,
   updateProperties,
-  removeItem
+  removeItem,
+  checkOwnership
 };
