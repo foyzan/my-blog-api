@@ -266,7 +266,7 @@ paths:
     get:
       tags:
       - Article
-      description: Retrive all the articles
+      description: get all the articles
       parameters:
       - name: page
         in: query
@@ -1265,6 +1265,128 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  /comments:
+    get:
+      security:
+        - bearerauth: []
+      tags:
+        - Comment
+      description: if client is Admin then return all the comments or User then all comments of user in this portal
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_byParam'
+        - $ref: '#/components/parameters/searchTermParam'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          required:
+                            - id
+                            - body
+                          properties:
+                            id: {type: string, examples: ['6585xe74seq454ax26975']}
+                            body: {type: string, format: text, examples: ['Excellent remark']}
+                            author: 
+                              $ref: '#/components/schemas/AuthorDTO'
+                            links:
+                              type: string
+                              format: url
+                              examples:
+                                - /comments/1
+                        - $ref : '#/components/schemas/Timestamp'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples: 
+                          - "/comments?page=2&limit=10"
+                      next:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=3&limit=10"
+                      prev:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=1&limit=10"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      security:
+        - bearerauth: []
+      tags:
+        - Comment
+      description: create a comment
+      requestBody:
+        description: user must provide valid data
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/CommentSchema'
+      responses:
+        '200':
+          description: successfully created a comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    examples: ['comment created']
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id : {type: string, examples: ['6585xe74seq454ax26975']}
+                      - $ref: '#/components/schemas/CommentSchema'
+                      - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01
+                      author:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01/author
+                      comment:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01/comment
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+
+
+
+
+
+
 components:
   securitySchemes:
     bearerauth:
@@ -1374,23 +1496,17 @@ components:
           - published
           default: draft
     CommentSchema:
-      allOf:
-      - type: object
+        type: object
         required:
         - title
         - body
         properties:
-          id:
-            type: integer
-            format: int32
-            examples:
-            - 2
-          postId:
+          article:
             type: integer
             format: int32
             examples:
             - 3
-          authorId:
+          author:
             type: integer
             format: int32
             examples:
@@ -1406,14 +1522,7 @@ components:
             - public
             - private
             default: public
-      - type: object
-        properties:
-          CreatedAt:
-            type: string
-            format: date-time
-          updatedAt:
-            type: string
-            format: date-time
+  
     AuthorDTO:
       type: object
       required:
@@ -1571,3 +1680,4 @@ components:
         type: string
         examples:
         - 125455
+      
