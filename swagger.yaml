@@ -1270,6 +1270,7 @@ paths:
       tags: ['Article']
       description: get all the comment of particular article
       parameters:
+        - $ref: '#/components/parameters/idPathParam'
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/sort_typeParam'
@@ -1330,6 +1331,8 @@ paths:
         - bearerauth: []
       tags: [Article]
       description: comment on a particular article
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
       requestBody:
         description: user must provide valid data
         content:
@@ -1380,6 +1383,8 @@ paths:
     get:
       tags: [Article]
       description: get the author info of an article
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
       responses:
         '200':
           description: successful
@@ -1532,7 +1537,107 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
-  
+  /comments/{id}:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['Comment']
+      description: get a particular comment 
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    allOf:
+                      - type: object
+                        properties:
+                          id : {type: string, examples: ['6585xe74seq454ax26975']}
+                          body : {type: string, examples: ['this is a great discussion']}
+                          author: 
+                            $ref: '#/components/schemas/AuthorDTO'
+                          article: {type: string, examples: ['6585xe74seq454ax26975']}
+                      -  $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self: {type: string, examples: ['/comments/6585xe74seq454ax26975']}
+                      author: {type: string, examples: ['/profile/6585xe74seq454ax26975']}
+                      article: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+    patch:
+      security:
+        - bearerauth: []
+      tags: ['Comment']
+      description: update a comments
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body: {type: string, format: text, examples: ['this was not the case']}
+                status: {type: string, enum: ['public', 'private'], examples: ['private']}
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    allOf:
+                      - type: object
+                        properties:
+                          id : {type: string, examples: ['6585xe74seq454ax26975']}
+                          body : {type: string, examples: ['this is a great discussion']}
+                          author: 
+                            $ref: '#/components/schemas/AuthorDTO'
+                          article: {type: string, examples: ['6585xe74seq454ax26975']}
+                      -  $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self: {type: string, examples: ['/comments/6585xe74seq454ax26975']}
+                      author: {type: string, examples: ['/profile/6585xe74seq454ax26975']}
+                      article: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      security:
+        - bearerauth: []
+      tags: ['Comment']
+      description: delete a particular comment
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses: 
+        '204':
+          description: Article deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'      
+      
+
+      
+        
+      
 
 
 
@@ -1821,7 +1926,6 @@ components:
       schema:
         type: string
         examples: ["term"]
-
     idPathParam:
       name: id
       required: true
