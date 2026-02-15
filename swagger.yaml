@@ -1265,6 +1265,157 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  /articles/{id}/comments:
+    get:
+      tags: ['Article']
+      description: get all the comment of particular article
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          required:
+                            - id
+                            - body
+                          properties:
+                            id: {type: string, examples: ['6585xe74seq454ax26975']}
+                            body: {type: string, format: text, examples: ['Excellent remark']}
+                            author: 
+                              $ref: '#/components/schemas/AuthorDTO'
+                            links:
+                              type: string
+                              format: url
+                              examples:
+                                - /comments/1
+                        - $ref : '#/components/schemas/Timestamp'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples: 
+                          - "/comments?page=2&limit=10"
+                      next:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=3&limit=10"
+                      prev:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=1&limit=10"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+    post:
+      security:
+        - bearerauth: []
+      tags: [Article]
+      description: comment on a particular article
+      requestBody:
+        description: user must provide valid data
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/CommentSchema'
+      responses:
+        '201':
+          description: successfully created a comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    examples: ['comment created']
+                  data:
+                    allOf:
+                      - type: object
+                        properties:
+                          id : {type: string, examples: ['6585xe74seq454ax26975']}
+                      - $ref: '#/components/schemas/CommentSchema'
+                      - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01
+                      author:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01/author
+                      comment:
+                        type: string
+                        format: url
+                        examples:
+                          - /comments/01/comment
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+  /articles/{id}/author:
+    get:
+      tags: [Article]
+      description: get the author info of an article
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string, examples: ['successful']}
+                  code: {type: string, format: int32, default: 201}
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/AuthorDTO'
+                      - type: object
+                        properties:
+                          username:
+                            type: string
+                            example: 'zenCode'
+                          email:
+                            type: string
+                            format: email
+                            example: 'example@kamal.com'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples:
+                          - /articles/01/author
+                      article:
+                        type: string
+                        format: url
+                        examples:
+                          - /article/01 
   /comments:
     get:
       security:
@@ -1342,7 +1493,7 @@ paths:
             schema: 
               $ref: '#/components/schemas/CommentSchema'
       responses:
-        '200':
+        '201':
           description: successfully created a comment
           content:
             application/json:
@@ -1381,7 +1532,7 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
-
+  
 
 
 
