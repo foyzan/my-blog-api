@@ -1633,12 +1633,121 @@ paths:
           $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'      
-      
-
-      
-        
-      
-
+  
+  /users:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: this will return all the user in portal. only for admin
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_byParam'
+        - $ref: '#/components/parameters/searchTermParam'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  code: {type: integer, format: int32, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            name:
+                              type: string
+                              examples:
+                              - kamal khan chowdhury
+                            username:
+                              type: string
+                              examples:
+                              - KamalUnreal
+                            email:
+                              type: string
+                              format: email
+                              examples:
+                              - info@kamal.com
+                            status:
+                              type: string
+                              enum: ["pending", "approved", "blocked", "decline"]
+                              examples: ['pending']
+                            role:
+                              type: string
+                              enum: ["user", "admin"]
+                              default: 'user'
+                        - $ref: '#/components/schemas/Timestamp'
+                  pagination:
+                        $ref: '#/components/schemas/pagination'
+                  links:
+                      type: object
+                      properties:
+                        self:
+                          type: string
+                          format: url
+                          examples: 
+                            - "/users?page=2&limit=10"
+                        next:
+                          type: string
+                          format: url
+                          examples:
+                            - "/users?page=3&limit=10"
+                        prev:
+                          type: string
+                          format: url
+                          examples:
+                            - "/users?page=1&limit=10"
+        '400':
+          $ref: "#/components/responses/400"
+        '404':
+          $ref: "#/components/responses/404"
+    post:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: this for create an new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSignup'
+      responses:
+        "201":
+          description: registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 201
+                  message:
+                    type: string
+                    examples:
+                    - registration successful
+                  data:
+                    type: object
+                    required:
+                     - access_token
+                    properties:
+                      access_token:
+                        type: string
+                        examples:
+                          - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkZveXphbiBBaG1lZCIsImVtYWlsIjoiaW5mb0Bmb3l6YW4uY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        "400":
+          $ref: '#/components/responses/400'
+        "500":
+          $ref: '#/components/responses/500'
 
 
 
