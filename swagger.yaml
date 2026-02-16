@@ -1086,7 +1086,7 @@ paths:
       - bearerauth: []
       tags:
       - Article
-      description: create or update entire article
+      description: update existing properties of an article
       parameters:
       - name: id
         required: true
@@ -1748,10 +1748,486 @@ paths:
           $ref: '#/components/responses/400'
         "500":
           $ref: '#/components/responses/500'
+  /users/{id}:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: get a particular User
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - name: expend
+          in: query
+          description: for expend
+          schema:
+            type: string
+            enum:
+            - article
+            - comment
+            examples:
+            - article
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code : {type: integer, format: int32, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    allOf:
+                      - type: object
+                        properties:
+                          name:
+                            type: string
+                            examples:
+                            - kamal khan chowdhury
+                          username:
+                            type: string
+                            examples:
+                            - KamalUnreal
+                          email:
+                            type: string
+                            format: email
+                            examples:
+                            - info@kamal.com
+                          status:
+                            type: string
+                            enum: ["pending", "approved", "blocked", "decline"]
+                            examples: ['pending']
+                          role:
+                            type: string
+                            enum: ["user", "admin"]
+                            default: 'user'
+                      - $ref: '#/components/schemas/Timestamp'
+                      - type : object
+                        properties:
+                          comment:
+                            type: array
+                            items:
+                              allOf:
+                              - type: object
+                                required:
+                                  - id
+                                  - body
+                                properties:
+                                  id: {type: string, examples: ['6585xe74seq454ax26975']}
+                                  body: {type: string, format: text, examples: ['Excellent remark']}
+                                  links:
+                                    type: string
+                                    format: url
+                                    examples:
+                                      - /comments/1
+                              - $ref : '#/components/schemas/Timestamp' 
+                      - type: object
+                        properties:
+                          article:
+                            type: array
+                            items:
+                              allOf:
+                                - type : object
+                                  properties:
+                                    id: {type : string, examples: ['6585xe74seq454ax26975']}
+                                    title:
+                                      type: string
+                                      examples:
+                                      - Article title
+                                    link: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+                                - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /user/1
+                      article:
+                        type: string
+                        examples:
+                        - /user/1/articles
+                      comment:
+                        type: string
+                        examples:
+                        - /user/1/comments
+    put:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: create or update entire user data
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+             allOf:
+               - $ref: '#/components/schemas/UserSignup'
+               - type: object
+                 properties:
+                    status:
+                      type: string
+                      enum: ["pending", "approved", "blocked", "decline"]
+                      default: "approved"
+                    role: 
+                      type: string
+                      enum: ["user", "admin"]
+                      default: "admin"
+      responses:
+        "200":
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Article successfully updated
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/UserSignup'
+                      - type: object
+                        properties:
+                            status:
+                              type: string
+                              enum: ["pending", "approved", "blocked", "decline"]
+                              default: "approved"
+                            role: 
+                              type: string
+                              enum: ["user", "admin"]
+                              default: "admin"
+                      - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /user/1
+        "201":
+          description: successfully Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 201
+                  message:
+                    type: string
+                    examples:
+                    - Article successfully created
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/UserSignup'
+                      - type: object
+                        properties:
+                            status:
+                              type: string
+                              enum: ["pending", "approved", "blocked", "decline"]
+                              default: "approved"
+                            role: 
+                              type: string
+                              enum: ["user", "admin"]
+                              default: "admin"
+                      - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /user/1
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 400
+                  error:
+                    type: string
+                    examples:
+                    - Bad request
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          examples:
+                          - email
+                        message:
+                          type: string
+                          examples:
+                          - invalid email
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 401
+                  error:
+                    type: string
+                    examples:
+                    - Unauthorized request
+                  message:
+                    type: string
+                    examples:
+                    - You don't have the permission
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 500
+                  error:
+                    type: string
+                    examples:
+                    - Internal Server Error
+                  message:
+                    type: string
+                    examples:
+                    - We are sorry for the inconvenience. Please try again
+    patch:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: update existing properties of an article
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              allOf:
+                - $ref: '#/components/schemas/UserSignup'
+                - type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: ["pending", "approved", "blocked", "decline"]
+                      default: "approved"
+                    role: 
+                      type: string
+                      enum: ["user", "admin"]
+                      default: "admin"
+      responses:
+        "200":
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Article successfully updated
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/UserSignup'
+                      - type: object
+                        properties:
+                            status:
+                              type: string
+                              enum: ["pending", "approved", "blocked", "decline"]
+                              default: "approved"
+                            role: 
+                              type: string
+                              enum: ["user", "admin"]
+                              default: "admin"
+                      - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /user/1
+        "400":
+          $ref: '#/components/responses/400'
+        "401":
+          $ref: '#/components/responses/401'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: delete a user By id
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses: 
+        '204':
+          description: Article deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /users/{id}/articles:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: get all the articles of a particular user
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/searchTermParam'
+      responses:
+        "200":
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code : { type : integer, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    type: array
+                    items:
+                      allOf:
+                        - type : object
+                          properties:
+                            id: {type : string, examples: ['6585xe74seq454ax26975']}
+                            title:
+                              type: string
+                              examples:
+                              - Article title
+                            link: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+                        - $ref: '#/components/schemas/Timestamp'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples: 
+                          - "/comments?page=2&limit=10"
+                      next:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=3&limit=10"
+                      prev:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=1&limit=10"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+  /users/{id}/comments:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['User']
+      description: get all the comments of a particular user
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/searchTermParam'
+      responses:
+        "200":
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code : { type : integer, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    type: array
+                    items:
+                       allOf:
+                          - type: object
+                            required:
+                              - id
+                              - body
+                            properties:
+                              id: {type: string, examples: ['6585xe74seq454ax26975']}
+                              body: {type: string, format: text, examples: ['Excellent remark']}
+                              links:
+                                type: string
+                                format: url
+                                examples:
+                                  - /comments/1
+                          - $ref : '#/components/schemas/Timestamp' 
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        examples: 
+                          - "/comments?page=2&limit=10"
+                      next:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=3&limit=10"
+                      prev:
+                       type: string
+                       format: url
+                       examples:
+                         - "/comments?page=1&limit=10"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404' 
 
-
-
-
+      
+      
 components:
   securitySchemes:
     bearerauth:
@@ -2044,4 +2520,6 @@ components:
         type: string
         examples:
         - 125455
+    
+      
       
