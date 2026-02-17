@@ -195,6 +195,10 @@ paths:
                     format: int32
                     examples:
                     - 200
+                  message:
+                    type: string
+                    examples:
+                    - Login successful
                   data:
                     type: object
                     properties:
@@ -319,10 +323,9 @@ paths:
                         - author
                         properties:
                           id:
-                            type: integer
-                            format: int32
+                            type: string
                             examples:
-                            - 1
+                            - '6585xe74seq454ax26975'
                           title:
                             type: string
                             examples:
@@ -339,10 +342,9 @@ paths:
                             - name
                             properties:
                               id:
-                                type: integer
-                                format: int32
+                                type: string
                                 examples:
-                                - 1
+                                - '6585xe74seq454ax26975'
                               name:
                                 type: string
                                 examples:
@@ -354,7 +356,7 @@ paths:
                             - /articles/1
                       - type: object
                         properties:
-                          CreatedAt:
+                          createdAt:
                             type: string
                             format: date-time
                           updatedAt:
@@ -544,7 +546,7 @@ paths:
                           default: draft
                     - type: object
                       properties:
-                        CreatedAt:
+                        createdAt:
                           type: string
                           format: date-time
                         updatedAt:
@@ -641,20 +643,19 @@ paths:
     get:
       tags:
       - Article
-      description: Fetch all the article
+      description: Fetch a single article by ID
       parameters:
       - name: id
         required: true
         in: path
-        description: authorId
+        description: article ID
         schema:
           type: string
-          format: int3
           examples:
           - 125455
-      - name: expend
+      - name: expand
         in: query
-        description: for expend
+        description: to expand related data
         schema:
           type: string
           enum:
@@ -699,7 +700,7 @@ paths:
                           default: draft
                     - type: object
                       properties:
-                        CreatedAt:
+                        createdAt:
                           type: string
                           format: date-time
                         updatedAt:
@@ -714,10 +715,9 @@ paths:
                           - name
                           properties:
                             id:
-                              type: integer
-                              format: int32
+                              type: string
                               examples:
-                              - 1
+                              - '6585xe74seq454ax26975'
                             name:
                               type: string
                               examples:
@@ -734,20 +734,17 @@ paths:
                               - body
                               properties:
                                 id:
-                                  type: integer
-                                  format: int32
+                                  type: string
                                   examples:
-                                  - 2
+                                  - '6585xe74seq454ax26975'
                                 postId:
-                                  type: integer
-                                  format: int32
+                                  type: string
                                   examples:
-                                  - 3
+                                  - '6585xe74seq454ax26975'
                                 authorId:
-                                  type: integer
-                                  format: int32
+                                  type: string
                                   examples:
-                                  - 4
+                                  - '6585xe74seq454ax26975'
                                 body:
                                   type: string
                                   format: text
@@ -761,7 +758,7 @@ paths:
                                   default: public
                             - type: object
                               properties:
-                                CreatedAt:
+                                createdAt:
                                   type: string
                                   format: date-time
                                 updatedAt:
@@ -941,7 +938,7 @@ paths:
                           default: draft
                     - type: object
                       properties:
-                        CreatedAt:
+                        createdAt:
                           type: string
                           format: date-time
                         updatedAt:
@@ -999,7 +996,7 @@ paths:
                           default: draft
                     - type: object
                       properties:
-                        CreatedAt:
+                        createdAt:
                           type: string
                           format: date-time
                         updatedAt:
@@ -1166,7 +1163,7 @@ paths:
                           default: draft
                     - type: object
                       properties:
-                        CreatedAt:
+                        createdAt:
                           type: string
                           format: date-time
                         updatedAt:
@@ -1274,7 +1271,7 @@ paths:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/sort_typeParam'
-        - $ref: '#/components/parameters/sort_typeParam'
+        - $ref: '#/components/parameters/sort_byParam'
       responses:
         '200':
           description: successful
@@ -1394,7 +1391,7 @@ paths:
                 type: object
                 properties:
                   message: { type: string, examples: ['successful']}
-                  code: {type: string, format: int32, default: 201}
+                  code: {type: integer, format: int32, default: 200}
                   data:
                     type: object
                     allOf:
@@ -1756,9 +1753,9 @@ paths:
       description: get a particular User
       parameters:
         - $ref: '#/components/parameters/idPathParam'
-        - name: expend
+        - name: expand
           in: query
-          description: for expend
+          description: to expand related data
           schema:
             type: string
             enum:
@@ -1851,6 +1848,10 @@ paths:
                         type: string
                         examples:
                         - /user/1/comments
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
     put:
       security:
         - bearerauth: []
@@ -2225,9 +2226,255 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404' 
-
-      
-      
+  /profile:
+    get:
+      security:
+        - bearerauth: []
+      tags: ['Profile']
+      description: authenticate user will see their profile
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code : {type: integer, format: int32, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    allOf:
+                      - type: object
+                        properties:
+                          name:
+                            type: string
+                            examples:
+                            - kamal khan chowdhury
+                          username:
+                            type: string
+                            examples:
+                            - KamalUnreal
+                          email:
+                            type: string
+                            format: email
+                            examples:
+                            - info@kamal.com
+                          status:
+                            type: string
+                            enum: ["pending", "approved", "blocked", "decline"]
+                            examples: ['pending']
+                          role:
+                            type: string
+                            enum: ["user", "admin"]
+                            default: 'user'
+                      - $ref: '#/components/schemas/Timestamp' 
+                      - type: object
+                        properties:
+                          article:
+                            type: array
+                            items:
+                              allOf:
+                                - type : object
+                                  properties:
+                                    id: {type : string, examples: ['6585xe74seq454ax26975']}
+                                    title:
+                                      type: string
+                                      examples:
+                                      - Article title
+                                    link: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+                                - $ref: '#/components/schemas/Timestamp'
+                      - type : object
+                        properties:
+                          comment:
+                            type: array
+                            items:
+                              allOf:
+                              - type: object
+                                required:
+                                  - id
+                                  - body
+                                properties:
+                                  id: {type: string, examples: ['6585xe74seq454ax26975']}
+                                  body: {type: string, format: text, examples: ['Excellent remark']}
+                                  links:
+                                    type: string
+                                    format: url
+                                    examples:
+                                      - /comments/1
+                              - $ref : '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /profile
+                      article:
+                        type: string
+                        examples:
+                        - /user/1/articles
+                      comment:
+                        type: string
+                        examples:
+                        - /user/1/comments
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+    patch:
+      security:
+        - bearerauth: []
+      tags: ['Profile']
+      description: update user profile data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                  - kamal khan chowdhury
+                username:
+                  type: string
+                  examples:
+                  - KamalUnreal
+                email:
+                  type: string
+                  format: email
+                  examples:
+                  - info@kamal.com
+      responses:
+        "200":
+          description: successfully updated
+          content:
+            application/json:
+            
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Article successfully updated
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        examples:
+                        - kamal khan chowdhury
+                      username:
+                        type: string
+                        examples:
+                        - KamalUnreal
+                      email:
+                        type: string
+                        format: email
+                        examples:
+                        - info@kamal.com
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - /profile
+        "400":
+          $ref: '#/components/responses/400'
+        "401":
+          $ref: '#/components/responses/401'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      security:
+        - bearerauth: []
+      tags: ['Profile']
+      description: user will delete their profile or account
+      responses: 
+        '204':
+          description: Article deleted successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /profile/{id}:
+    get:
+      tags: ['Profile']
+      description: view an user profile 
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code : {type: integer, format: int32, default: 200}
+                  message: {type: string, examples: ['successful']}
+                  data: 
+                    allOf:
+                      - type: object
+                        properties:
+                          name:
+                            type: string
+                            examples:
+                            - kamal khan chowdhury
+                          username:
+                            type: string
+                            examples:
+                            - KamalUnreal
+                          email:
+                            type: string
+                            format: email
+                            examples:
+                            - info@kamal.com
+                      - $ref: '#/components/schemas/Timestamp' 
+                      - type: object
+                        properties:
+                          article:
+                            type: array
+                            items:
+                              allOf:
+                                - type : object
+                                  properties:
+                                    id: {type : string, examples: ['6585xe74seq454ax26975']}
+                                    title:
+                                      type: string
+                                      examples:
+                                      - Article title
+                                    link: {type: string, examples: ['/articles/6585xe74seq454ax26975']}
+                                - $ref: '#/components/schemas/Timestamp'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        examples:
+                        - '/profile/6585xe74seq454ax26975'
+                      register:
+                        type: string
+                        examples:
+                        - /auth/register
+                      login:
+                        type: string
+                        examples:
+                        - /auth/login
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
 components:
   securitySchemes:
     bearerauth:
@@ -2264,7 +2511,7 @@ components:
     Timestamp:
       type: object
       properties:
-        CreatedAt:
+        createdAt:
           type: string
           format: date-time
         updatedAt:
@@ -2339,19 +2586,16 @@ components:
     CommentSchema:
         type: object
         required:
-        - title
         - body
         properties:
           article:
-            type: integer
-            format: int32
+            type: string
             examples:
-            - 3
+            - '6585xe74seq454ax26975'
           author:
-            type: integer
-            format: int32
+            type: string
             examples:
-            - 4
+            - '6585xe74seq454ax26975'
           body:
             type: string
             format: text
@@ -2371,10 +2615,9 @@ components:
       - name
       properties:
         id:
-          type: integer
-          format: int32
+          type: string
           examples:
-          - 1
+          - '6585xe74seq454ax26975'
         name:
           type: string
           examples:
