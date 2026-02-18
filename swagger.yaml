@@ -1271,7 +1271,16 @@ paths:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/sort_typeParam'
-        - $ref: '#/components/parameters/sort_byParam'
+        -   name: sort_by
+            in: query
+            description: ""
+            schema:
+              type: string
+              enum:
+              - updatedAt
+              - body
+              default: updatedAt
+        - $ref: '#/components/parameters/searchTermParam'
       responses:
         '200':
           description: successful
@@ -1335,7 +1344,9 @@ paths:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/CommentSchema'
+              type: object
+              properties:
+                body: {type: string, examples: ['Great article']}
       responses:
         '201':
           description: successfully created a comment
@@ -1366,12 +1377,8 @@ paths:
                         type: string
                         format: url
                         examples:
-                          - /comments/01/author
-                      comment:
-                        type: string
-                        format: url
-                        examples:
-                          - /comments/01/comment
+                          - '/profile/6585xe74seq454ax26975'
+                      
         '401':
           $ref: '#/components/responses/401'
         '404':
@@ -2758,7 +2765,7 @@ components:
       name: id
       required: true
       in: path
-      description: authorId
+      description: Id
       schema:
         type: string
         examples:

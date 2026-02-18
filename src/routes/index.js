@@ -28,11 +28,12 @@ router.route("/articles/:id")
 .delete(authenticate, authorize(["user", 'admin']), ownership,articleController.removeItem)
 
 router.route("/articles/:id/comments")
-.get(test)
-.post(test)
+.get(articleController.findAllComments)
+.post(authenticate,authorize(['user', 'admin']),articleController.commentsOnArticle)
 
 router.route("/articles/:id/author")
-.get(test)
+.get(articleController.findAuthor)
+
 
 
 // comments routes

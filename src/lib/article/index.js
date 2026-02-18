@@ -1,6 +1,7 @@
 const defaults = require("../../config/defaults");
 const { Article, Comment } = require("../../model");
 const { badRequest, notFound } = require("../../utils/error");
+const mongoose = require('mongoose')
 
 const findAll = ({
   page = defaults.page,
@@ -170,6 +171,114 @@ const checkOwnership = async ({resourceId, userId}) => {
 
 }
 
+const findAllComments = async ({
+  article, // Article ID
+  page = defaults.page,
+  limit = defaults.limit,
+  sortType = defaults.sortType,
+  sortBy = defaults.sortBy,
+  searchQuery = defaults.searchQuery,
+}) => {
+  // 1. Validation: Ensure 'article' is a valid MongoDB ObjectId
+  // This prevents Mongoose from throwing a 'CastError' before the query even runs
+  if (!mongoose.Types.ObjectId.isValid(article)) {
+    throw badRequest("Invalid Article ID format");
+  }
+
+  // 2. Existence Check
+  const hasArticle = await Article.findById(article).lean(); // Use .lean() here too for speed
+  if (!hasArticle) {
+    throw notFound("Article not found");
+  }
+
+  // 3. Build Filter
+  const filter = { article };
+  if (searchQuery) {
+    // Matching your Schema field 'body'
+    filter.body = { $regex: searchQuery, $options: "i" };
+  }
+
+  const sortOrder = sortType === "dsc" ? -1 : 1;
+  const sortOptions = { [sortBy]: sortOrder };
+
+  // 4. Execute Query
+  return Comment.find(filter)
+    .select("-__v")
+    .populate({
+      path: "author",
+      select: "name", 
+    })
+    .sort(sortOptions)
+    .skip((Number(page) - 1) * limit)
+    .limit(Number(limit))
+    .lean();
+};
+
+
+const countArticleComments = ({ article, searchQuery = "" }) => {
+
+
+  
+  // 1. Filter by the specific article ID
+  const filter = { article };
+
+  // 2. Target the 'body' field to match your Schema
+  if (searchQuery) {
+    filter.body = { $regex: searchQuery, $options: "i" };
+  }
+
+  // 3. Efficiently count matching documents
+  return Comment.countDocuments(filter);
+};
+
+
+const commentsOnArticle = async({body, status = 'public', author, article})=>{
+
+  if (!mongoose.Types.ObjectId.isValid(article)) {
+    throw badRequest("Invalid Article ID format");
+  }
+
+  // 2. Existence Check
+  const hasArticle = await Article.findById(article).lean(); // Use .lean() here too for speed
+  if (!hasArticle) {
+    throw notFound("Article not found");
+  }
+
+  const comment = await Comment.create({body, status, article, author})
+
+  return comment._doc;
+
+}
+
+
+const findAuthor = async ({ id }) => { // <--- 'id' comes from here
+  
+  console.log(id);
+  // 1. Validate 'id' (the variable passed into the function)
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw badRequest("Invalid Article ID format");
+  }
+
+  // 2. Query Article and populate the author
+  const article = await Article.findById(id)
+    .populate({ 
+      path: "author", 
+      select: "name email avatar" 
+    })
+    .lean();
+
+  if (!article) {
+    throw notFound("Article not found");
+  }
+
+  if (!article.author) {
+    throw notFound("The author of this article no longer exists");
+  }
+
+  return article.author;
+};
+
+
 
 module.exports = {
   findAll,
@@ -179,5 +288,9 @@ module.exports = {
   updateOrCreate,
   updateProperties,
   removeItem,
-  checkOwnership
+  checkOwnership,
+  findAllComments,
+  countArticleComments,
+  commentsOnArticle,
+  findAuthor
 };
