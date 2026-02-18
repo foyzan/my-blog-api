@@ -11,12 +11,13 @@ const commentsOnArticle = async (req, res, next) => {
       author,
     });
 
+    const url = req.baseUrl + req.path;
     const response = {
       message: "comment created",
       data: comment,
       links: {
-        self: `/comments/${comment._id}`,
-        author: `/profile/${comment.author}`,
+        self: url,
+        author: `${req.baseUrl}/profile/${comment.author}`,
       },
     };
 

@@ -25,12 +25,14 @@ const updateItemPatch = async (req, res, next) => {
     
     const article = await articleService.updateProperties(id, updatePayload);
 
+    // response
+    const url = req.baseUrl + req.path
     const response = {
       code: 200,
       message: "Article successfully updated",
       data: article,
       links: {
-        self: req.originalUrl,
+        self: url,
       },
     };
 

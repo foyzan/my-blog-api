@@ -28,7 +28,7 @@ const findAll = async (req, res, next) => {
 
     
 
-    // response
+  
 
     //data
     const data = articles.map(article => {

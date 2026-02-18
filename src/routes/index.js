@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const {controllers: articleController} = require('../api/v1/article')
+const {controllers: commentController} = require('../api/v1/comment')
 const {controllers: authController} = require('../api/v1/authentication');
 const authenticate = require("../middleware/authentication");
 const authorize = require("../middleware/authorize");
@@ -23,9 +24,9 @@ router.route("/articles")
 
 router.route("/articles/:id")
 .get(articleController.findSingleItem)
-.put(authenticate,authorize(['user', 'admin']),ownership,articleController.updateItem)
-.patch(authenticate,authorize(['user', 'admin']), ownership,articleController.updateItemPatch)
-.delete(authenticate, authorize(["user", 'admin']), ownership,articleController.removeItem)
+.put(authenticate,authorize(['user', 'admin']),ownership('articles'),articleController.updateItem)
+.patch(authenticate,authorize(['user', 'admin']), ownership('articles'),articleController.updateItemPatch)
+.delete(authenticate, authorize(["user", 'admin']), ownership('articles'),articleController.removeItem)
 
 router.route("/articles/:id/comments")
 .get(articleController.findAllComments)
@@ -39,13 +40,13 @@ router.route("/articles/:id/author")
 // comments routes
 
 router.route("/comments")
-.get(test)
-.post(test)
+.get(commentController.findAll)
+.post(authenticate,authorize(['user', 'admin']),commentController.create)
 
 router.route("/comments/:id")
-.get(test)
-.patch(test)
-.delete(test)
+.get(commentController.findSingle)
+.patch(authenticate, authorize(['user', 'admin']), ownership('comments'), commentController.updateItemPatch)
+.delete(authenticate, authorize(['user', 'admin']), ownership('comments'), commentController.removeItem);
 
 
 // users routes

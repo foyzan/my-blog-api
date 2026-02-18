@@ -1,24 +1,34 @@
-
 const articleService = require("../../../../lib/article");
 const findSingleItem = async (req, res, next) => {
-    
-    const id = req.params.id
-    const expend = req.query.expend || ""
+  const id = req.params.id;
+  const expand = req.query.expand || "";
 
-    try {
-        
-        const article = await articleService.findSingleItem({id : id, expend : expend});
-        article.links = {
-        self:  `/article/${id}`,
-        author: `/article/${id}/author`,
-        comment: `/article/${id}/comment`,
-      }
+  try {
+    const { article, comments = null} = await articleService.findSingleItem({
+      id: id,
+      expend: expand,
+    });
 
-      // response
-      res.json(article)
-    } catch (error) {
-        next(error)
+    // response
+
+    const url = req.baseUrl + req.path
+    const response = {
+      data: article,
+      comments: comments,
+      links: {
+        self: url,
+        author: `${url}/author`,
+        comment: `${url}/comments`,
+      },
+    };
+
+    if(!comments){
+        delete response.comments
     }
-}
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = findSingleItem
+module.exports = findSingleItem;

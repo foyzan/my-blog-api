@@ -15,12 +15,16 @@ const updateItem = async (req, res, next) => {
       status,
     });
 
+
+    //response
+    const url = req.baseUrl + req.path
+
     const response = {
       code: statusCode,
       message: statusCode === 201 ? "Article successfully created" : "Article successfully updated",
       data: article,
       links: {
-        self: req.originalUrl,
+        self: url,
       },
     };
 

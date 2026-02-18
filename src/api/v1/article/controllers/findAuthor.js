@@ -9,13 +9,15 @@ const findAuthor = async (req, res, next) => {
     const author = await articleService.findAuthor({ id : article });
 
     // response structure
+    const url = req.baseUrl + req.path;
+
     const response = {
       message: "successful",
       code: 200,
       data: author,
       links: {
-        self: `/articles/${article}/author`,
-        article: `/articles/${article}`,
+        self: url,
+        article: `${req.baseUrl}/articles/${article}`,
       },
     };
 

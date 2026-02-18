@@ -176,12 +176,12 @@ paths:
                   type: string
                   format: email
                   examples:
-                  - info@kamal.com
+                  - stuart.sipes31@gmail.com
                 password:
                   type: string
                   format: password
                   examples:
-                  - efeT23!kj)
+                  - password123
       responses:
         "200":
           description: Signin successful
@@ -722,9 +722,7 @@ paths:
                               type: string
                               examples:
                               - Raybrin Max
-                    - type: object
-                      properties:
-                        comment:
+                  comments:
                           type: array
                           items:
                             allOf:
@@ -763,7 +761,7 @@ paths:
                                   format: date-time
                                 updatedAt:
                                   type: string
-                                  format: date-time
+                                  format: date-time  
                   links:
                     type: object
                     properties:
@@ -1500,7 +1498,11 @@ paths:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/CommentSchema'
+              type: object
+              properties:
+                body: {type: string, examples: ['this is a great article']}
+                article: {type: string, example: '6585xe74seq454ax26975'}
+            
       responses:
         '201':
           description: successfully created a comment

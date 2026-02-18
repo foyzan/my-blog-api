@@ -1,16 +1,34 @@
-const ArticleService = require('../lib/article')
-const { authorizationError } = require('../utils/error')
-const ownership = async (req, res, next) => {
+const articleService = require("../lib/article");
+const commentService = require("../lib/comment");
+const { authorizationError } = require("../utils/error");
+const ownership = (route) => async (req, _res, next) => {
+  if (req.url.role === "admin") {
+    return next();
+  }
+  
+  let isOwner = '';
 
-    
-    const isOwner =  await ArticleService.checkOwnership({resourceId : req.params.id, userId: req.user.id})
+  if (route === "articles") {
+      isOwner = await articleService.checkOwnership({
+      resourceId: req.params.id,
+      userId: req.user._id,
+    });
+  }
 
-    if(!isOwner){
-        return next(authorizationError())
-    }
+  if(route === "comments" ){
+    isOwner = await commentService.checkOwnership({
+        resourceId: req.params.id,
+        userId: req.user._id
+    })
+  }
 
-    return next()
-    
-}
+  console.log(isOwner)
 
-module.exports = ownership
+  if (!isOwner) {
+    return next(authorizationError());
+  }
+
+  return next();
+};
+
+module.exports = ownership;

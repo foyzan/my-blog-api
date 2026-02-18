@@ -11,6 +11,9 @@ const register = async (req, res, next) => {
       password,
     });
 
+    // response
+    const url = req.baseUrl + req.path
+
     const response = {
       code: 201,
       message: "registration successful",
@@ -18,7 +21,7 @@ const register = async (req, res, next) => {
         access_token: accessToken,
       },
       links: {
-        self: req.originalUrl,
+        self: url,
         login: `${req.baseUrl}/auth/login`,
       },
     };

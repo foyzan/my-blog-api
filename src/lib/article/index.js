@@ -77,12 +77,17 @@ const findSingleItem = async ({ id, expend = "" }) => {
   if (expend === "comment") {
     const comments = await Comment.find({ article: id })
       .populate("author", "name")
+      .sort({createdAt: -1})
+      .limit(10)
       .lean();
 
-    return { ...article._doc, comments };
+      
+
+      console.log(1)
+    return { article : {...article._doc}, comments };
   }
 
-  return { ...article._doc };
+  return { article : {...article._doc}};;
 };
 
 
@@ -152,7 +157,8 @@ const removeItem = async (id) => {
     throw notFound("Resource not found");
   }
 
-  // TODO : clean up comments, cover photo and other related data.
+  // TODO : cover photo and other related data.
+  await Comment.deleteMany({ article: id });
 
   const deleteArticle = await Article.findByIdAndDelete(id)
 
@@ -166,7 +172,7 @@ const checkOwnership = async ({resourceId, userId}) => {
   
   const article = await Article.findById(resourceId).lean()
   
-  return hasOwnership = article.author === userId;
+  return article.author.toString() === userId.toString();
 
 
 }

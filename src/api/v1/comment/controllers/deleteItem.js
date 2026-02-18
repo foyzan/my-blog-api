@@ -1,4 +1,7 @@
-const deleteItem = (req, res, next) => {
+const commentService = require('../../../../lib/comment');
+
+const deleteItem = async (req, res, next) => {
+    
 
 }
 

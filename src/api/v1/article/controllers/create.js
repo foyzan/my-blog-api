@@ -12,14 +12,17 @@ const create = async (req, res, next) => {
       author,
     });
 
+    // response
+    const url = req.baseUrl + req.path;
+
     const response = {
       code: 201,
       message: "article created",
       data: {...article._doc},
       links: {
-        self:  `/article/${article._id}`,
-        author: `/article/${article._id}/author`,
-        comment: `/article/${article._id}/comment`,
+        self:  url,
+        author: `${url}/${article._id}/author`,
+        comment: `${url}/${article._id}/comment`,
       },
     };
     res.status(201).json(response);

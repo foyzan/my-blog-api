@@ -5,13 +5,16 @@ const login = async (req, res, next) => {
   try {
     const accessToken = await authService.login({ email, password });
 
+
+    // response
+    const url = req.baseUrl + req.path
     const response = {
       code: 200,
       data: {
         access_token: accessToken
       },
       links: {
-        self: req.originalUrl,
+        self: url,
         register: `${req.baseUrl}/auth/register`,
       },
     };
