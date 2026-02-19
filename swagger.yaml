@@ -2506,12 +2506,12 @@ components:
         username:
           type: string
           examples:
-          - KamalUnreal
+          - KamalUnreal23
         email:
           type: string
           format: email
           examples:
-          - info@kamal.com
+          - info123@kamal.com
         password:
           type: string
           format: password

@@ -1,4 +1,5 @@
 const { Comment, Article } = require("../../model");
+const defaults = require("../../config/defaults");
 const mongoose = require('mongoose');
 const { notFound, badRequest } = require("../../utils/error");
 
@@ -124,15 +125,15 @@ const checkOwnership = async ({resourceId, userId}) => {
     throw notFound()
   }
 
-
-  
-
-
   
   return comment.author.toString() === userId.toString();
 
 
 }
+
+
+
+
 
 
 module.exports = {

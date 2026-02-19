@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const {controllers: articleController} = require('../api/v1/article')
 const {controllers: commentController} = require('../api/v1/comment')
+const {controllers: userController} = require('../api/v1/user')
 const {controllers: authController} = require('../api/v1/authentication');
 const authenticate = require("../middleware/authentication");
 const authorize = require("../middleware/authorize");
@@ -52,8 +53,8 @@ router.route("/comments/:id")
 // users routes
 
 router.route("/users")
-.get(test)
-.post(test)
+.get(userController.findAll)
+.post(authenticate, authorize, userController.create)
 
 router.route("/users/:id")
 .get(test)
