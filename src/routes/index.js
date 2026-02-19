@@ -57,7 +57,7 @@ router.route("/users")
 .post(authenticate, authorize, userController.create)
 
 router.route("/users/:id")
-.get(test)
+.get(userController.findSingle)
 .put(test)
 .patch(test)
 .delete(test)

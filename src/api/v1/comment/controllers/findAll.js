@@ -21,7 +21,7 @@ const findAll = async (req, res, next) => {
 
     //data
     const data = comments.map((comment) => {
-      return { ...comment, link: `/article/${comment._id}` };
+      return { ...comment, link: `/comments/${comment._id}` };
     });
 
     //pagination

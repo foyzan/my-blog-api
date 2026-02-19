@@ -9,6 +9,7 @@ const findSingle = async (req, res, next) => {
     // response
     const url = req.baseUrl + req.path
     const response = {
+      code: 200,
       message: "successful",
       data: comment,
       links: {

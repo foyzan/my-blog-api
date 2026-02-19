@@ -24,11 +24,6 @@ const findAll = ({
 
   return User.find(filter) // 1. Initial Query
     .select("-__v") // 2. Field Selection
-    .populate({
-      // 3. Joins/Transforms
-      path: "author",
-      select: "name",
-    })
     .lean() // 4. Performance Optimization
     .sort(sortOptions) // 5. Ordering
     .skip((Number(page) - 1) * limit) // 6. Pagination Skip
@@ -44,23 +39,41 @@ const countDocuments = ({ searchQuery = "" }) => {
   return User.countDocuments(filter);
 };
 
-const findSingleItem = async ({ id }) => {
-  
+const findSingleItem = async ({ id, expend = "" }) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw badRequest("Invalid user id format");
+    throw badRequest("invalid id");
   }
 
-  
-  const user = await User.findById(id)
-    .populate("author", "name")
-    .lean();
+  const user = await User.findById(id).select('-__v')
 
-  
   if (!user) {
-    throw notFound("Comment not found");
+    throw notFound("Resource not found");
   }
 
-  return user;
+  if (expend === "article") {
+    const articles = await Article.find({ author: id }) // user is author in comment
+      .populate("author", "name")
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
+
+
+    return { user: { ...user._doc }, articles };
+  }
+
+  if (expend === "comment") {
+    const comments = await Comment.find({ author: id }) // user is author in comment
+      .populate("author", "name")
+      .select('-__v')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
+
+    return { user: { ...user._doc }, comments };
+  }
+
+  return { user: { ...user._doc } };
 };
 
 const findUserByEmail = async ({ email }) => {
@@ -82,9 +95,7 @@ const create = async ({ name, username, email, password }) => {
   return { ...user._doc, id: user._id };
 };
 
-
 const updateProperties = async (id, payload) => {
-
   const user = await User.findOneAndUpdate(
     { _id: id },
     { $set: payload },
@@ -103,16 +114,13 @@ const updateProperties = async (id, payload) => {
     username: user.username,
     role: user.role,
     status: user.status,
-    CreatedAt: user.createdAt, 
+    CreatedAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
 };
 
-const updateOrCreate = async (
-  id,
-  { name, username, email, password },
-) => {
-  const payload =  { name, username, email, password };
+const updateOrCreate = async (id, { name, username, email, password }) => {
+  const payload = { name, username, email, password };
   const user = await User.findOneAndUpdate(
     { _id: id }, // 1. Filter: Find by this ID
     { $set: payload }, // 2. Data: What to put in the document
@@ -135,22 +143,19 @@ const updateOrCreate = async (
 };
 
 const removeItem = async (id) => {
-
-  console.log(id)
+  console.log(id);
   const user = await User.findById(id);
 
-  if(!user){
-    throw notFound()
+  if (!user) {
+    throw notFound();
   }
 
   // todo: delete all article and comments too
 
-  return await user.deleteOne()
+  return await user.deleteOne();
+};
 
-}
-
-
-// find all comments of an particular user 
+// find all comments of an particular user
 
 const findAllComments = async ({
   author, // User ID
@@ -187,7 +192,7 @@ const findAllComments = async ({
     .select("-__v")
     .populate({
       path: "author",
-      select: "name", 
+      select: "name",
     })
     .sort(sortOptions)
     .skip((Number(page) - 1) * limit)
@@ -196,9 +201,6 @@ const findAllComments = async ({
 };
 
 const countUserComments = ({ author, searchQuery = "" }) => {
-
-
-  
   // 1. Filter by the specific author ID
   const filter = { author };
 
@@ -210,8 +212,6 @@ const countUserComments = ({ author, searchQuery = "" }) => {
   // 3. Efficiently count matching documents
   return Comment.countDocuments(filter);
 };
-
-
 
 // find all articles of an particular user
 
@@ -250,7 +250,7 @@ const findAllArticles = async ({
     .select("-__v")
     .populate({
       path: "author",
-      select: "name", 
+      select: "name",
     })
     .sort(sortOptions)
     .skip((Number(page) - 1) * limit)
@@ -259,9 +259,6 @@ const findAllArticles = async ({
 };
 
 const countUserArticles = ({ author, searchQuery = "" }) => {
-
-
-  
   // 1. Filter by the specific author ID
   const filter = { author };
 
@@ -273,9 +270,6 @@ const countUserArticles = ({ author, searchQuery = "" }) => {
   // 3. Efficiently count matching documents
   return Article.countDocuments(filter);
 };
-
-
-
 
 module.exports = {
   userExist,
@@ -290,5 +284,5 @@ module.exports = {
   findAllComments,
   countUserComments,
   findAllArticles,
-  countUserArticles
+  countUserArticles,
 };

@@ -10,8 +10,8 @@ const findAll = async (req, res, next) => {
   const searchQuery = req.query.search || defaults.searchQuery;
 
   try {
-    // comments
-    const comments = await userService.findAll({
+    // users
+    const users = await userService.findAll({
       page,
       limit,
       sortType,
@@ -20,8 +20,8 @@ const findAll = async (req, res, next) => {
     });
 
     //data
-    const data = comments.map((comment) => {
-      return { ...comment, link: `/article/${comment._id}` };
+    const data = users.map((user) => {
+      return { ...user, link: `/users/${user._id}` };
     });
 
     //pagination

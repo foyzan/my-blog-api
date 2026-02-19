@@ -13,6 +13,8 @@ const findSingleItem = async (req, res, next) => {
 
     const url = req.baseUrl + req.path
     const response = {
+      code: 200,
+      message: 'successful',
       data: article,
       comments: comments,
       links: {
