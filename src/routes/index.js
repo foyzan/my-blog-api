@@ -58,15 +58,15 @@ router.route("/users")
 
 router.route("/users/:id")
 .get(userController.findSingle)
-.put(test)
-.patch(test)
-.delete(test)
+.put(userController.updateItem)
+.patch(userController.updateItemPatch)
+.delete(userController.removeItem)
 
 router.route("/users/:id/articles")
-.get(test)
+.get(userController.findAllArticles)
 
 router.route("/users/:id/comments")
-.get(test)
+.get(userController.findAllComments)
 
 
 // profile routes

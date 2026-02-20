@@ -21,7 +21,7 @@ const updateItem = async (req, res, next) => {
 
     const response = {
       code: statusCode,
-      message: statusCode === 201 ? "Article successfully created" : "Article successfully updated",
+      message: statusCode === 201 ? "successfully created" : "successfully updated",
       data: article,
       links: {
         self: url,

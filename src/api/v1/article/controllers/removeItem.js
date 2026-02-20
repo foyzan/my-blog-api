@@ -7,6 +7,8 @@ const removeItem = async (req, res, next)=>{
         
         const article = await articleService.removeItem(id);
 
+        
+
         res.status(204).end()
 
     } catch (error) {

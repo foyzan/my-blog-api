@@ -906,7 +906,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - Article successfully updated
+                    -  successfully updated
                   data:
                     allOf:
                     - type: object
@@ -964,7 +964,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - Article successfully created
+                    - successfully created
                   data:
                     allOf:
                     - type: object
@@ -1900,7 +1900,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - Article successfully updated
+                    -  successfully updated
                   data:
                     allOf:
                       - $ref: '#/components/schemas/UserSignup'
@@ -1937,7 +1937,7 @@ paths:
                   message:
                     type: string
                     examples:
-                    - Article successfully created
+                    - successfully created
                   data:
                     allOf:
                       - $ref: '#/components/schemas/UserSignup'

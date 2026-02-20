@@ -2,6 +2,7 @@ const { User, Comment, Article } = require("../../model");
 const defaults = require("../../config/defaults");
 const mongoose = require("mongoose");
 const { notFound, badRequest } = require("../../utils/error");
+const { generateHash } = require("../../utils/hashing");
 
 const findAll = ({
   page = defaults.page,
@@ -28,6 +29,8 @@ const findAll = ({
     .sort(sortOptions) // 5. Ordering
     .skip((Number(page) - 1) * limit) // 6. Pagination Skip
     .limit(Number(limit));
+  
+    
 };
 
 const countDocuments = ({ searchQuery = "" }) => {
@@ -44,7 +47,7 @@ const findSingleItem = async ({ id, expend = "" }) => {
     throw badRequest("invalid id");
   }
 
-  const user = await User.findById(id).select('-__v')
+  const user = await User.findById(id).select("-__v");
 
   if (!user) {
     throw notFound("Resource not found");
@@ -53,11 +56,10 @@ const findSingleItem = async ({ id, expend = "" }) => {
   if (expend === "article") {
     const articles = await Article.find({ author: id }) // user is author in comment
       .populate("author", "name")
-      .select('-__v')
+      .select("-__v")
       .sort({ createdAt: -1 })
       .limit(10)
       .lean();
-
 
     return { user: { ...user._doc }, articles };
   }
@@ -65,7 +67,7 @@ const findSingleItem = async ({ id, expend = "" }) => {
   if (expend === "comment") {
     const comments = await Comment.find({ author: id }) // user is author in comment
       .populate("author", "name")
-      .select('-__v')
+      .select("-__v")
       .sort({ createdAt: -1 })
       .limit(10)
       .lean();
@@ -96,6 +98,12 @@ const create = async ({ name, username, email, password }) => {
 };
 
 const updateProperties = async (id, payload) => {
+
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw badRequest("invalid id");
+  }
+
   const user = await User.findOneAndUpdate(
     { _id: id },
     { $set: payload },
@@ -119,31 +127,47 @@ const updateProperties = async (id, payload) => {
   };
 };
 
-const updateOrCreate = async (id, { name, username, email, password }) => {
-  const payload = { name, username, email, password };
-  const user = await User.findOneAndUpdate(
-    { _id: id }, // 1. Filter: Find by this ID
-    { $set: payload }, // 2. Data: What to put in the document
+
+
+
+const updateOrCreate = async (id, { name, username, email, password, status = "pending", role = "user" }) => {
+  
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw badRequest("invalid id");
+  }
+
+  // 1. Manually hash the password (PUT bypasses Mongoose hooks)
+  
+  const hashedPassword = await generateHash(password)
+
+  const payload = { name, username, email, password: hashedPassword, status, role };
+
+  // 2. Use findOneAndReplace for true PUT behavior
+  const result = await User.findOneAndReplace(
+    { _id: id }, 
+    payload, 
     {
-      new: true, // Return the updated/new document
-      upsert: true, // Create it if it doesn't exist
-      runValidators: true, // Ensure schema rules are followed
-      setDefaultsOnInsert: true, // Apply default values if creating new
-      includeResultMetadata: true,
-    },
+      new: true,           // Return the document AFTER replacement
+      upsert: true,        // Create it if it doesn't exist
+      runValidators: true, 
+      includeResultMetadata: true 
+    }
   ).lean();
 
-  // 3. Determine HTTP Code based on MongoDB metadata
-  const isUpdate = user.lastErrorObject.updatedExisting;
+  // 3. Determine if it was an update or a fresh creation
+  const isUpdate = result.lastErrorObject?.updatedExisting;
 
   return {
-    user: user.value, // The actual article data
+    user: result.value,
     statusCode: isUpdate ? 200 : 201,
   };
 };
 
 const removeItem = async (id) => {
-  console.log(id);
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw badRequest("invalid id");
+  }
   const user = await User.findById(id);
 
   if (!user) {
@@ -153,6 +177,7 @@ const removeItem = async (id) => {
   // todo: delete all article and comments too
 
   return await user.deleteOne();
+  
 };
 
 // find all comments of an particular user
@@ -165,8 +190,10 @@ const findAllComments = async ({
   sortBy = defaults.sortBy,
   searchQuery = defaults.searchQuery,
 }) => {
+
+
   // 1. Validation: Ensure 'author' is a valid MongoDB ObjectId
-  // This prevents Mongoose from throwing a 'CastError' before the query even runs
+ 
   if (!mongoose.Types.ObjectId.isValid(author)) {
     throw badRequest("Invalid User ID format");
   }
