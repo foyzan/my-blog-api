@@ -2,6 +2,7 @@ const router = require("express").Router();
 const {controllers: articleController} = require('../api/v1/article')
 const {controllers: commentController} = require('../api/v1/comment')
 const {controllers: userController} = require('../api/v1/user')
+const {controllers: profileController} = require('../api/v1/profile')
 const {controllers: authController} = require('../api/v1/authentication');
 const authenticate = require("../middleware/authentication");
 const authorize = require("../middleware/authorize");
@@ -71,11 +72,17 @@ router.route("/users/:id/comments")
 
 // profile routes
 router.route("/profile")
-.get(test)
+.get(authenticate,profileController.usersProfile)
 .patch(test)
 .delete(test)
 
 router.route("/profile/:id")
+.get(test)
+
+router.route("/profile/articles")
+.get(test)
+
+router.route("/profile/comments")
 .get(test)
 
 
