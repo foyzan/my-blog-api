@@ -4,6 +4,7 @@ const updateItemPatch = require("./updateItemPatch");
 const usersProfile = require("./usersProfile");
 const findAllComments = require("./findAllComments");
 const findAllArticles = require("./findAllArticles");
+const removeItem = require("./removeItem");
 
 
 
@@ -15,6 +16,6 @@ module.exports = {
     deleteItem,
     findSingle,
     findAllComments,
-    findAllArticles
-
+    findAllArticles,
+    removeItem
 }

@@ -9,7 +9,7 @@ const authenticate = async (req, res, next) =>{
 
     try {
 
-        const decodedUser = verifyToken({token});
+        const decodedUser =  verifyToken({token});
 
         const user = await userService.findUserByEmail({email : decodedUser.email})
 

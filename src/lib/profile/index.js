@@ -35,7 +35,7 @@ const findOwnProfile = async ({id}) => {
       .limit(10)
       .lean();
 
-    return { user: { ...user._doc }, comments, articles };
+    return { user: { ...user._doc }, articles, comments};
 };
 
 
@@ -107,6 +107,8 @@ const removeItem = async (id) => {
   }
 
   // todo: delete all article and comments too
+  await Comment.deleteMany({ author: id });
+  await Article.deleteMany({ author: id });
 
   return await user.deleteOne();
   

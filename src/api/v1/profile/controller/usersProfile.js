@@ -4,8 +4,9 @@ const usersProfile = async (req, res, next) => {
   const id = req.user._id;
 
   try {
-    const profile = await profileService.findOwnProfile(id);
+    const profile = await profileService.findOwnProfile({id});
 
+    
     // response
 
     const url = req.baseUrl + req.path;

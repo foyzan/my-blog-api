@@ -71,19 +71,21 @@ router.route("/users/:id/comments")
 
 
 // profile routes
-router.route("/profile")
-.get(authenticate,profileController.usersProfile)
-.patch(test)
-.delete(test)
 
-router.route("/profile/:id")
-.get(test)
 
 router.route("/profile/articles")
-.get(test)
+.get(authenticate, profileController.findAllArticles)
 
 router.route("/profile/comments")
-.get(test)
+.get(authenticate, profileController.findAllComments)
+
+router.route("/profile")
+.get(authenticate,profileController.usersProfile)
+.patch(authenticate, profileController.updateItemPatch)
+.delete(authenticate, profileController.removeItem)
+
+router.route("/profile/:id")
+.get(profileController.findSingle)
 
 
 module.exports = router;

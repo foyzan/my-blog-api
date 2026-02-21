@@ -2491,7 +2491,6 @@ paths:
       tags: ['Profile']
       description: get all the articles of a particular user
       parameters:
-        - $ref: '#/components/parameters/idPathParam'
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/sort_typeParam'
@@ -2551,7 +2550,6 @@ paths:
       tags: ['Profile']
       description: get all the comments of a particular user
       parameters:
-        - $ref: '#/components/parameters/idPathParam'
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/limitParam'
         - $ref: '#/components/parameters/sort_typeParam'

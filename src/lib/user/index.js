@@ -174,7 +174,9 @@ const removeItem = async (id) => {
     throw notFound();
   }
 
-  // todo: delete all article and comments too
+ 
+  await Comment.deleteMany({ author: id });
+  await Article.deleteMany({ author: id });
 
   return await user.deleteOne();
   
@@ -266,7 +268,7 @@ const findAllArticles = async ({
   const filter = { author };
   if (searchQuery) {
     // Matching your Schema field 'body'
-    filter.body = { $regex: searchQuery, $options: "i" };
+    filter.title = { $regex: searchQuery, $options: "i" };
   }
 
   const sortOrder = sortType === "dsc" ? -1 : 1;

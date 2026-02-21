@@ -10,6 +10,7 @@ const findAllArticles = async (req, res, next) => {
   const searchQuery = req.query.search || defaults.searchQuery;
   const author = req.user._id;
 
+  console.log(author)
   try {
     // result
     const articles = await userService.findAllArticles({
