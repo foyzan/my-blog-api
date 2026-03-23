@@ -94,6 +94,8 @@ src/
 │   └── User.model.js       # User schema
 ├── middleware/
 │   └── authentication.js   # Auth middleware
+├── routes/
+│   └── index.js            # All routes
 ├── lib/                    # Utility libraries
 ├── utils/                  # Helper functions
 ├── app.js                  # Express app setup
