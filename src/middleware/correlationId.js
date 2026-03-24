@@ -7,7 +7,7 @@ const correlationIdMiddleware = (req, res, next)=>{
     req.correlationId = correlationId;
 
     res.setHeader('x-correlation-id', correlationId);
-    next()
+    return next()
 }
 
 

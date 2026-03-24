@@ -10,7 +10,7 @@ const updateItemPatch = async (req, res, next) => {
   const updatePayload = {};
 
   allowedUpdates.forEach(field =>{
-    if(req.body[field] !== 'undefined'){
+    if(req.body[field] !== undefined){
       updatePayload[field] = req.body[field];
     }
   })

@@ -4,7 +4,8 @@ const applyMiddleware = require("./middleware");
 const router = require('./routes');
 const {notFound}= require("./utils/error");
 const { expressWinstonInfoLogger, expressWinstonErrorLogger } = require("./middleware/express-winston");
-const correlationIdMiddleware = require("../../Logging System/src/middlewares/correlationIdMiddleware");
+const correlationIdMiddleware = require("./middleware/correlationId");
+
 
 const app = express();
 
