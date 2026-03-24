@@ -3,7 +3,7 @@ const commentService = require("../../../../lib/comment");
 const removeItem = async (req, res, next) => {
 
     const id = req.params.id
-    console.log(req.params.id)
+
     try {
 
         const comment = await commentService.removeItem(id)

@@ -12,6 +12,7 @@ const morgan = require('morgan')
 const applyMiddleware = (app) => {
   app.use(cors({}));
   app.use(express.json());
+  app.use(express.urlencoded({extended: true}))
   app.use(morgan('dev'))
   app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
   app.use(

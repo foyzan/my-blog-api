@@ -105,7 +105,7 @@ const updateProperties = async (id, payload) => {
 
 const removeItem = async (id) => {
 
-  console.log(id)
+ 
   const comment = await Comment.findById(id);
 
   if(!comment){

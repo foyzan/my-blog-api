@@ -22,7 +22,7 @@ const generateToken = ({
       algorithm,
     });
   } catch (error) {
-    console.log(error)
+    
     throw serverError("Internal server Error");
   }
 };
@@ -31,7 +31,7 @@ const verifyToken = ({ token, secret = config.secret }) => {
   try {
     return jwt.verify(token, secret);
   } catch (error) {
-    console.log(error)
+    
     throw serverError("Internal server Error");
   }
 };
@@ -40,7 +40,7 @@ const decodeToken = ({token}) => {
   try {
     return jwt.decode(token);
   } catch (error) {
-    console.log(error)
+    
     throw serverError("Internal server Error");
   }
 };

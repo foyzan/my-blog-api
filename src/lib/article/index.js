@@ -83,7 +83,7 @@ const findSingleItem = async ({ id, expend = "" }) => {
 
       
 
-      console.log(1)
+      
     return { article : {...article._doc}, comments };
   }
 
@@ -259,7 +259,7 @@ const commentsOnArticle = async({body, status = 'public', author, article})=>{
 
 const findAuthor = async ({ id }) => { // <--- 'id' comes from here
   
-  console.log(id);
+
   // 1. Validate 'id' (the variable passed into the function)
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw badRequest("Invalid Article ID format");

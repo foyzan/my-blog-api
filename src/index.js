@@ -3,6 +3,7 @@ const app = require("./app");
 const { connectDB } = require("./db");
 
 const http = require('http');
+const logger = require("./utils/logger");
 
 const server = http.createServer(app)
 
@@ -11,10 +12,10 @@ async function main() {
     await connectDB()
     const port = process.env.PORT || 4000
     server.listen(port, async () => {
-    console.log(`Sever is running on port ${port}`);
+    logger.info(`Sever is running on port ${port}`);
   });
 }
 
 
-main().catch((err) => console.log(err));
+main().catch((err) => logger.info(err));
 

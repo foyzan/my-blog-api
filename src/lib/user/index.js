@@ -91,7 +91,7 @@ const userExist = async ({ email }) => {
 };
 
 const create = async ({ name, username, email, password }) => {
-  console.log({ name, username, email, password });
+ 
   const user = new User({ name, username, email, password });
   await user.save();
   return { ...user._doc, id: user._id };

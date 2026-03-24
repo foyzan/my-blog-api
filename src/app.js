@@ -3,15 +3,20 @@ const express = require("express");
 const applyMiddleware = require("./middleware");
 const router = require('./routes');
 const {notFound}= require("./utils/error");
+const { expressWinstonInfoLogger, expressWinstonErrorLogger } = require("./middleware/express-winston");
+const correlationIdMiddleware = require("../../Logging System/src/middlewares/correlationIdMiddleware");
+
 const app = express();
 
 applyMiddleware(app);
 
+app.use(correlationIdMiddleware)
 
-app.use((req, res, next) => {
-  console.log(`Incoming Request: ${req.method} ${req.url}`);
-  next();
-});
+app.use(expressWinstonInfoLogger)
+
+
+
+
 
 app.use("/api/v1" , router)
 
@@ -29,9 +34,11 @@ app.use((_req, _res, next) => {
   next(error);
 });
 
+
+app.use(expressWinstonErrorLogger)
 app.use((err, _req, res, next) => {
 
-  console.log(err)
+
   // format error
   res.status(err.status || 500).json({
     message: err.message,
