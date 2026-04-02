@@ -7,6 +7,7 @@ const {controllers: authController} = require('../api/v1/authentication');
 const authenticate = require("../middleware/authentication");
 const authorize = require("../middleware/authorize");
 const ownership = require("../middleware/ownership");
+const getPreSignUrl = require("../api/v1/upload");
 const test = (req, res) => {
   res.status(200).json({
     message: "Request Successful",
@@ -87,5 +88,7 @@ router.route("/profile")
 router.route("/profile/:id")
 .get(profileController.findSingle)
 
+
+router.route("/get-pre-sign-url", authorize(['user', 'admin']), getPreSignUrl)
 
 module.exports = router;

@@ -79,3 +79,32 @@ The application uses a custom logging architecture located in `src/utils/logger`
 - `src/api/v1`: Controllers and logic for specific resources (User, Article).
 - `src/middleware`: Custom Express middlewares (Logger, Correlation ID).
 - `src/utils`: Helper functions and the Logger configuration.
+```text
+.
+├── src/
+│   ├── api/v1/                # API Route controllers and endpoint logic
+│   │   ├── article/
+│   │   │   └── controllers/
+│   │   │       └── findAuthor.js
+│   │   └── user/              # User-related endpoint controllers
+│   ├── config/                # Global configuration and default constants
+│   │   └── defaults.js
+│   ├── lib/                   # Core business logic and service layer
+│   │   ├── article/           # Article services (CRUD, comments, etc.)
+│   │   ├── profile/           # User profile services
+│   │   ├── token/             # JWT generation and verification
+│   │   └── user/              # User services (CRUD, auth checks)
+│   ├── middleware/            # Custom Express middlewares
+│   │   └── express-winston.js # Winston integration for HTTP logging
+│   ├── model/                 # Mongoose schemas and database models
+│   │   └── index.js
+│   └── utils/                 # Utility functions and shared helpers
+│       ├── error/             # Custom error handling classes
+│       ├── hashing/           # Password hashing and comparison
+│       └── logger/            # Advanced Winston logger configuration
+├── logs/                      # Automatically generated log files
+├── .env                       # Environment variables (ignored by git)
+├── README.md                  # Project documentation
+├── seed.js                    # Database seeding script for mock data
+└── text.js                    # Experimental/Utility scripts
+```
