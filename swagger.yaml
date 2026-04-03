@@ -19,6 +19,8 @@ tags:
   description: "Profile Endpoints (public, private)"
 - name: Test
   description: Test Endpoints
+- name: Upload
+  description: File Upload Endpoints
 paths:
   /test:
     get:
@@ -2606,6 +2608,46 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+  /get-pre-sign-url:
+    post:
+      security:
+        - bearerauth: []
+      tags:
+        - Upload
+      description: Generate a pre-signed URL for uploading files (like cover images) to S3/R2 storage.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mimetype
+              properties:
+                mimetype:
+                  type: string
+                  description: The MIME type of the file to be uploaded (e.g., image/jpeg, image/png).
+                  example: image/png
+      responses:
+        "200":
+          description: Successfully generated URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: url
+                    example: "https://your-bucket.r2.cloudflarestorage.com/image.png?sig=..."
+                  filename:
+                    type: string
+                    description: The generated destination path for the file in the storage bucket.
+                    example: uploads/82402930-7456-466d-a602-54566c74b88d.png
+        "401":
+          $ref: '#/components/responses/401'
+        "500":
+          $ref: '#/components/responses/500'
 
 components:
   securitySchemes:

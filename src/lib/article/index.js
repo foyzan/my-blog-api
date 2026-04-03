@@ -171,8 +171,9 @@ const removeItem = async (id) => {
 const checkOwnership = async ({resourceId, userId}) => {
   
   const article = await Article.findById(resourceId).lean()
+  if (!article) return false;
   
-  return article.author.toString() === userId.toString();
+  return article.author?.toString() === userId?.toString();
 
 
 }

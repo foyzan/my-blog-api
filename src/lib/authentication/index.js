@@ -11,10 +11,10 @@ const register = async ({name, username, email, password}) =>{
        throw badRequest('Email is already registered.')
     }
 
-    const hashedPassword = await generateHash(password);
+
     
 
-    const user = await userService.create({name, username, email, password: hashedPassword})
+    const user = await userService.create({name, username, email, password})
 
     const payload = {
         id : user.id,

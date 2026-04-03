@@ -5,7 +5,7 @@ const { serverError } = require("../../utils/error");
 
 
 const config = {
-  secret: process.env.ACCESS_TOKEN_SECRET || "my-secret",
+  secret: process.env.ACCESS_TOKEN_SECRET,
   accessExp: "3h", // Short life for security
   algorithm: "HS256",
 };
@@ -16,6 +16,9 @@ const generateToken = ({
   algorithm = config.algorithm,
   accessExp = config.accessExp,
 }) => {
+  if (!secret) {
+    throw serverError("Secret key is missing in configuration");
+  }
   try {
     return jwt.sign(payload, secret, {
       expiresIn: accessExp,
@@ -31,7 +34,10 @@ const verifyToken = ({ token, secret = config.secret }) => {
   try {
     return jwt.verify(token, secret);
   } catch (error) {
-    
+    if (error.name === 'TokenExpiredError') {
+       throw badRequest("Token has expired");
+    }
+    // Log the actual error for the server, but give a clear hint to the user
     throw serverError("Internal server Error");
   }
 };

@@ -38,6 +38,12 @@ ACCESS_TOKEN_SECRET=your_jwt_secret
 # Logging (Better Stack / Logtail)
 SOURCE_TOKEN=your_logtail_source_token
 INGESTING_HOST=in.logs.betterstack.com
+
+# Storage (Cloudflare R2 / S3)
+R2_ENDPOINT=https://<accountid>.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+AWS_S3_BUCKET_NAME=my-blog-assets
 ```
 
 ## 📦 Installation & Run

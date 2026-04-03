@@ -89,6 +89,7 @@ router.route("/profile/:id")
 .get(profileController.findSingle)
 
 
-router.route("/get-pre-sign-url", authorize(['user', 'admin']), getPreSignUrl)
+router.route("/get-pre-sign-url")
+  .post(authenticate, getPreSignUrl);
 
 module.exports = router;

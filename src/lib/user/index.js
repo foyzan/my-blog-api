@@ -91,8 +91,9 @@ const userExist = async ({ email }) => {
 };
 
 const create = async ({ name, username, email, password }) => {
- 
-  const user = new User({ name, username, email, password });
+  const hashedPassword = await generateHash(password);
+
+  const user = new User({ name, username, email, password: hashedPassword });
   await user.save();
   return { ...user._doc, id: user._id };
 };
